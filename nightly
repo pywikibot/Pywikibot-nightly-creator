@@ -1,0 +1,47 @@
+#! /bin/bash
+
+cd /data/project/pywikibot/public_html/
+rm -rf compat/
+git clone --recursive --depth 1 https://gerrit.wikimedia.org/r/pywikibot/compat.git
+#chmod -R 775 compat
+cd /data/project/pywikibot/public_html/compat
+echo nightly/compat > version
+git rev-list HEAD | wc -l >> version
+date +%Y-%m-%dT%H:%M:%S >> version
+git rev-parse --short HEAD >> version
+git gc --aggressive --prune=all --quiet
+cd i18n
+git gc --aggressive --prune --quiet
+cd /data/project/pywikibot/public_html/
+rm -rf core/
+git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
+# this used to be 776, but people were getting perm denied errors so I changed it to 777 (legoktm, 2014-11-13)
+# now valhallasw says to use 775 so yeah (legoktm, 2014-11-13)
+#It caued T94184, I commented it out (Amir, 2015-4-4-)
+#chmod -R 775 core
+#cd /data/project/pywikibot/public_html
+#git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
+cd /data/project/pywikibot/public_html/core/externals
+rm -rf httplib2
+git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/externals/httplib2.git
+cd /data/project/pywikibot/public_html/core/scripts
+rm -rf i18n
+git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
+cd /data/project/pywikibot/public_html/core
+echo nightly/core > pywikibot/version
+git rev-list HEAD | wc -l >> pywikibot/version
+date +%Y-%m-%dT%H:%M:%S >> pywikibot/version
+git rev-parse --short HEAD >> pywikibot/version
+git gc --aggressive --prune=all --quiet
+cd scripts/i18n
+git gc --aggressive --prune=all --quiet
+rm /data/project/pywikibot/public_html/core.zip
+rm /data/project/pywikibot/public_html/compat.zip
+rm /data/project/pywikibot/public_html/core.tar.gz
+rm /data/project/pywikibot/public_html/compat.tar.gz
+cd /data/project/pywikibot/public_html/
+zip -9 -r -q core.zip core
+zip -9 -r -q compat.zip compat
+tar czPf core.tar.gz core/
+tar czPf compat.tar.gz compat/
+
