@@ -15,12 +15,7 @@ git gc --aggressive --prune --quiet
 cd /data/project/pywikibot/public_html/
 rm -rf core/
 git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
-# this used to be 776, but people were getting perm denied errors so I changed it to 777 (legoktm, 2014-11-13)
-# now valhallasw says to use 775 so yeah (legoktm, 2014-11-13)
-#It caued T94184, I commented it out (Amir, 2015-4-4-)
 #chmod -R 775 core
-#cd /data/project/pywikibot/public_html
-#git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 cd /data/project/pywikibot/public_html/core/externals
 rm -rf httplib2
 git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/externals/httplib2.git
