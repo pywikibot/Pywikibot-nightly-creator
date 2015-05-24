@@ -1,18 +1,6 @@
 #! /bin/bash
 
 cd /data/project/pywikibot/public_html/
-rm -rf compat/
-git clone --recursive --depth 1 https://gerrit.wikimedia.org/r/pywikibot/compat.git
-#chmod -R 775 compat
-cd /data/project/pywikibot/public_html/compat
-echo nightly/compat > version
-git rev-list HEAD | wc -l >> version
-date +%Y-%m-%dT%H:%M:%S >> version
-git rev-parse --short HEAD >> version
-git gc --aggressive --prune=all --quiet
-cd i18n
-git gc --aggressive --prune --quiet
-cd /data/project/pywikibot/public_html/
 rm -rf core/
 git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 #chmod -R 775 core
@@ -31,12 +19,8 @@ git gc --aggressive --prune=all --quiet
 cd scripts/i18n
 git gc --aggressive --prune=all --quiet
 rm /data/project/pywikibot/public_html/core.zip
-rm /data/project/pywikibot/public_html/compat.zip
 rm /data/project/pywikibot/public_html/core.tar.gz
-rm /data/project/pywikibot/public_html/compat.tar.gz
 cd /data/project/pywikibot/public_html/
 zip -9 -r -q core.zip core
-zip -9 -r -q compat.zip compat
 tar czPf core.tar.gz core/
-tar czPf compat.tar.gz compat/
 
