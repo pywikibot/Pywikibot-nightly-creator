@@ -44,17 +44,35 @@ cd /data/project/pywikibot/public_html/core_old
 git checkout $(git rev-list -n 1 --before=`date --date="7 days ago" +%F` master) -b core_old
 git gc --aggressive --prune=all --quiet
 #End
+#Create the latest stable version
+cd /data/project/pywikibot/public_html/
+rm -rf /data/project/pywikibot/public_html/core_stable
+git clone https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
+cd /data/project/pywikibot/public_html/core_stable/externals
+rm -rf httplib2
+git clone https://gerrit.wikimedia.org/r/pywikibot/externals/httplib2.git
+cd /data/project/pywikibot/public_html/core_stable/scripts
+rm -rf i18n
+git clone https://gerrit.wikimedia.org/r/pywikibot/i18n.git
+cd /data/project/pywikibot/public_html/core_stable
+git checkout tags/2.0rc1 -b core_stable
+git gc --aggressive --prune=all --quiet
+#End
 rm /data/project/pywikibot/public_html/core.zip
 rm /data/project/pywikibot/public_html/core_old.zip
+rm /data/project/pywikibot/public_html/core_stable.zip
 rm /data/project/pywikibot/public_html/compat.zip
 rm /data/project/pywikibot/public_html/core.tar.gz
 rm /data/project/pywikibot/public_html/compat.tar.gz
 rm /data/project/pywikibot/public_html/core_old.gz
+rm /data/project/pywikibot/public_html/core_stable.gz
 cd /data/project/pywikibot/public_html/
 zip -9 -r -q core.zip core
 zip -9 -r -q core_old.zip core_old
+zip -9 -r -q core_stable.zip core_stable
 zip -9 -r -q compat.zip compat
 tar czPf core.tar.gz core/
 tar czPf core_old.tar.gz core_old/
+tar czPf core_stable.tar.gz core_stable/
 tar czPf compat.tar.gz compat/
 
