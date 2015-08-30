@@ -1,6 +1,8 @@
 #! /bin/bash
 
 cd /data/project/pywikibot/public_html/
+#Cloning mwparserfromhell bug: T88069
+git clone https://github.com/earwig/mwparserfromhell.git
 rm -rf compat/
 git clone --recursive --depth 1 https://gerrit.wikimedia.org/r/pywikibot/compat.git
 #chmod -R 775 compat
@@ -28,6 +30,7 @@ git rev-list HEAD | wc -l >> pywikibot/version
 date +%Y-%m-%dT%H:%M:%S >> pywikibot/version
 git rev-parse --short HEAD >> pywikibot/version
 git gc --aggressive --prune=all --quiet
+cp -R /data/project/pywikibot/public_html/mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 cd scripts/i18n
 git gc --aggressive --prune=all --quiet
 #Create an old version of core. Bug T98592
@@ -43,6 +46,7 @@ git clone https://gerrit.wikimedia.org/r/pywikibot/i18n.git
 cd /data/project/pywikibot/public_html/core_old
 git checkout $(git rev-list -n 1 --before=`date --date="7 days ago" +%F` master) -b core_old
 git gc --aggressive --prune=all --quiet
+cp -R /data/project/pywikibot/public_html/mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 #End
 #Create the latest stable version
 cd /data/project/pywikibot/public_html/
@@ -58,6 +62,7 @@ rm -rf i18n
 git clone https://gerrit.wikimedia.org/r/pywikibot/i18n.git
 cd /data/project/pywikibot/public_html/core_stable
 git gc --aggressive --prune=all --quiet
+cp -R /data/project/pywikibot/public_html/mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 #End
 rm /data/project/pywikibot/public_html/core.zip
 rm /data/project/pywikibot/public_html/core_old.zip
