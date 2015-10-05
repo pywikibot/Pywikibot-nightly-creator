@@ -53,7 +53,7 @@ cd /data/project/pywikibot/public_html/
 rm -rf /data/project/pywikibot/public_html/core_stable
 git clone https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 cd /data/project/pywikibot/public_html/core_stable/
-git checkout tags/2.0rc1 -b core_stable
+git checkout tags/2.0rc3 -b core_stable
 cd /data/project/pywikibot/public_html/core_stable/externals
 rm -rf httplib2
 git clone https://gerrit.wikimedia.org/r/pywikibot/externals/httplib2.git
