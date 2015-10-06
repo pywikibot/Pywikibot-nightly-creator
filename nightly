@@ -1,5 +1,14 @@
 #! /bin/bash
+# Create version file
+function create_version {
+    echo "$1" > $2
+    git rev-list HEAD | wc -l >> $2
+    date +%Y-%m-%dT%H:%M:%S >> $2
+    git rev-parse --short HEAD >> $2
+}
 
+
+# Current version of compat
 cd /data/project/pywikibot/public_html/
 #Cloning mwparserfromhell bug: T88069
 git clone https://github.com/earwig/mwparserfromhell.git
@@ -7,13 +16,13 @@ rm -rf compat/
 git clone --recursive --depth 1 https://gerrit.wikimedia.org/r/pywikibot/compat.git
 #chmod -R 775 compat
 cd /data/project/pywikibot/public_html/compat
-echo nightly/compat > version
-git rev-list HEAD | wc -l >> version
-date +%Y-%m-%dT%H:%M:%S >> version
-git rev-parse --short HEAD >> version
+create_version "nightly/compat" "version"
 git gc --aggressive --prune=all --quiet
 cd i18n
 git gc --aggressive --prune --quiet
+
+
+# Current version of core
 cd /data/project/pywikibot/public_html/
 rm -rf core/
 git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
@@ -25,14 +34,13 @@ cd /data/project/pywikibot/public_html/core/scripts
 rm -rf i18n
 git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
 cd /data/project/pywikibot/public_html/core
-echo nightly/core > pywikibot/version
-git rev-list HEAD | wc -l >> pywikibot/version
-date +%Y-%m-%dT%H:%M:%S >> pywikibot/version
-git rev-parse --short HEAD >> pywikibot/version
+create_version "nightly/core" "pywikibot/version"
 git gc --aggressive --prune=all --quiet
 cp -R /data/project/pywikibot/public_html/mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 cd scripts/i18n
 git gc --aggressive --prune=all --quiet
+
+
 #Create an old version of core. Bug T98592
 cd /data/project/pywikibot/public_html/
 rm -rf /data/project/pywikibot/public_html/core_old
@@ -45,9 +53,11 @@ rm -rf i18n
 git clone https://gerrit.wikimedia.org/r/pywikibot/i18n.git
 cd /data/project/pywikibot/public_html/core_old
 git checkout $(git rev-list -n 1 --before=`date --date="7 days ago" +%F` master) -b core_old
+create_version "nightly/core" "pywikibot/version"
 git gc --aggressive --prune=all --quiet
 cp -R /data/project/pywikibot/public_html/mwparserfromhell/mwparserfromhell/ mwparserfromhell/
-#End
+
+
 #Create the latest stable version
 cd /data/project/pywikibot/public_html/
 rm -rf /data/project/pywikibot/public_html/core_stable
@@ -61,9 +71,11 @@ cd /data/project/pywikibot/public_html/core_stable/scripts
 rm -rf i18n
 git clone https://gerrit.wikimedia.org/r/pywikibot/i18n.git
 cd /data/project/pywikibot/public_html/core_stable
+create_version "stable/core" "pywikibot/version"
 git gc --aggressive --prune=all --quiet
 cp -R /data/project/pywikibot/public_html/mwparserfromhell/mwparserfromhell/ mwparserfromhell/
-#End
+
+
 rm /data/project/pywikibot/public_html/core.zip
 rm /data/project/pywikibot/public_html/core_old.zip
 rm /data/project/pywikibot/public_html/core_stable.zip
