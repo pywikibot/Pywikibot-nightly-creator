@@ -12,6 +12,7 @@ function create_version {
 cd /data/project/pywikibot/public_html/
 #Cloning mwparserfromhell bug: T88069
 git clone https://github.com/earwig/mwparserfromhell.git
+chmod -R 777 compat
 rm -rf compat/
 git clone --recursive --depth 1 https://gerrit.wikimedia.org/r/pywikibot/compat.git
 #chmod -R 775 compat
@@ -24,6 +25,7 @@ git gc --aggressive --prune --quiet
 
 # Current version of core
 cd /data/project/pywikibot/public_html/
+chmod -R 777 core
 rm -rf core/
 git clone --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 #chmod -R 775 core
@@ -43,6 +45,7 @@ git gc --aggressive --prune=all --quiet
 
 #Create an old version of core. Bug T98592
 cd /data/project/pywikibot/public_html/
+chmod -R 777 /data/project/pywikibot/public_html/core_old
 rm -rf /data/project/pywikibot/public_html/core_old
 git clone https://gerrit.wikimedia.org/r/pywikibot/core.git core_old
 cd /data/project/pywikibot/public_html/core_old/externals
@@ -60,6 +63,7 @@ cp -R /data/project/pywikibot/public_html/mwparserfromhell/mwparserfromhell/ mwp
 
 #Create the latest stable version
 cd /data/project/pywikibot/public_html/
+chmod -R 777 /data/project/pywikibot/public_html/core_stable
 rm -rf /data/project/pywikibot/public_html/core_stable
 git clone https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 cd /data/project/pywikibot/public_html/core_stable/
