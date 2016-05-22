@@ -10,7 +10,7 @@ function create_version {
 }
 
 TMPDIR=$(mktemp -d)
-echo Building new public_html in $TMPDIR ...
+echo Building new public_html in $TMPDIR on `hostname`...
 function finish {
   rm -rf "$TMPDIR"
   echo Cleaned up $TMPDIR
