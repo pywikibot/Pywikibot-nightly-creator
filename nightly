@@ -59,33 +59,14 @@ git clone -q https://gerrit.wikimedia.org/r/pywikibot/core.git core_old
     cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 5: core-stable
-#Create 2.0 version
-git clone -q --depth 1 -b 2.0 https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
-(cd core_stable
-    create_version "nightly/core_stable" "pywikibot/version"
-    git gc --aggressive --prune=all --quiet
-    (cd externals
-        git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/externals/httplib2.git
-        (cd httplib2 && git gc --aggressive --prune=all --quiet)
-    )
-    (cd scripts
-        git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
-        (cd i18n && git gc --aggressive --prune=all --quiet)
-    )
-    cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
-)
-
-echo Step 6: zip ALL the things
+echo Step 5: zip ALL the things
 zip -9 -r -q core.zip core
 zip -9 -r -q core_old.zip core_old
-zip -9 -r -q core_stable.zip core_stable
 zip -9 -r -q compat.zip compat
 
-echo Step 7: tar ALL the things
+echo Step 6: tar ALL the things
 tar czPf core.tar.gz core/
 tar czPf core_old.tar.gz core_old/
-tar czPf core_stable.tar.gz core_stable/
 tar czPf compat.tar.gz compat/
 
 echo Step 7: copy static files
