@@ -1,6 +1,9 @@
 #! /bin/bash
 set -e -u
 
+# non tools.pywikibot should not be able to tamper with this
+umask 0022
+
 # Create version file
 function create_version {
     echo "$1" > $2
