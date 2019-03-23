@@ -26,16 +26,7 @@ echo Step 1: mwparserfromhell
 git clone -q https://github.com/earwig/mwparserfromhell.git
 (cd mwparserfromhell && git gc --aggressive --prune=all --quiet)
 
-echo Step 2: compat
-# compat
-git clone -q --recursive --depth 1 https://gerrit.wikimedia.org/r/pywikibot/compat.git
-(cd compat
-    create_version "nightly/compat" "version"
-    git gc --aggressive --prune=all --quiet
-    (cd i18n && git gc --aggressive --prune=all --quiet)
-)
-
-echo Step 3: core master
+echo Step 2: core master
 # Current version of core
 git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 (cd core
@@ -48,12 +39,11 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
     cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 4: core-7 days old
-#Create an old version of core. Bug T98592
-git clone -q https://gerrit.wikimedia.org/r/pywikibot/core.git core_old
-(cd core_old
-    git checkout $(git rev-list -n 1 --before=`date --date="7 days ago" +%F` master) -b core_old
-    create_version "nightly/core_old" "pywikibot/version"
+echo Step 3: core stable
+# Create a stable version of core. Bugs T98592 and T217236
+git clone -q --branch stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
+(cd core_stable
+    create_version "nightly/core_stable" "pywikibot/version"
     git gc --aggressive --prune=all --quiet
     (cd scripts
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
@@ -62,20 +52,18 @@ git clone -q https://gerrit.wikimedia.org/r/pywikibot/core.git core_old
     cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 5: zip ALL the things
+echo Step 4: zip ALL the things
 zip -9 -r -q core.zip core
-zip -9 -r -q core_old.zip core_old
-zip -9 -r -q compat.zip compat
+zip -9 -r -q core_stable.zip core_stable
 
-echo Step 6: tar ALL the things
+echo Step 5: tar ALL the things
 tar czPf core.tar.gz core/
-tar czPf core_old.tar.gz core_old/
-tar czPf compat.tar.gz compat/
+tar czPf core_stable.tar.gz core_stable/
 
-echo Step 7: copy static files
-cp -R /data/project/pywikibot/public_html_static/* .
+echo Step 6: copy static files
+cp -R /data/project/pywikibot/public_html_static/. .
 
-echo Step 8: do the magic switcharoo
+echo Step 7: do the magic switcharoo
 set 
 cd /data/project/pywikibot/
 rm -rf public_html.new
