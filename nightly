@@ -48,12 +48,11 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
     cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 4: core-7 days old
-#Create an old version of core. Bug T98592
-git clone -q https://gerrit.wikimedia.org/r/pywikibot/core.git core_old
-(cd core_old
-    git checkout $(git rev-list -n 1 --before=`date --date="7 days ago" +%F` master) -b core_old
-    create_version "nightly/core_old" "pywikibot/version"
+echo Step 4: core stable
+# Create a stable version of core. Bugs T98592 and T217236
+git clone -q --branch stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
+(cd core_stable
+    create_version "nightly/core_stable" "pywikibot/version"
     git gc --aggressive --prune=all --quiet
     (cd scripts
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
@@ -64,12 +63,12 @@ git clone -q https://gerrit.wikimedia.org/r/pywikibot/core.git core_old
 
 echo Step 5: zip ALL the things
 zip -9 -r -q core.zip core
-zip -9 -r -q core_old.zip core_old
+zip -9 -r -q core_stable.zip core_stable
 zip -9 -r -q compat.zip compat
 
 echo Step 6: tar ALL the things
 tar czPf core.tar.gz core/
-tar czPf core_old.tar.gz core_old/
+tar czPf core_stable.tar.gz core_stable/
 tar czPf compat.tar.gz compat/
 
 echo Step 7: copy static files
