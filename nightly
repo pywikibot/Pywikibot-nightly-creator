@@ -61,7 +61,7 @@ tar czPf core.tar.gz core/
 tar czPf core_stable.tar.gz core_stable/
 
 echo Step 6: copy static files
-cp -R /data/project/pywikibot/public_html_static/* .
+cp -R /data/project/pywikibot/public_html_static/. .
 
 echo Step 7: do the magic switcharoo
 set 
