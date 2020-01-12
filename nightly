@@ -41,7 +41,7 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 
 echo Step 3: core stable
 # Create a stable version of core. Bugs T98592 and T217236
-git clone -q --branch stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
+git clone -q --depth 1 --branch stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 (cd core_stable
     create_version "nightly/core_stable" "pywikibot/version"
     git gc --aggressive --prune=all --quiet
