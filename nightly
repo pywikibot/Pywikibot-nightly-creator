@@ -24,7 +24,7 @@ cd $TMPDIR
 
 echo Step 1: mwparserfromhell
 git clone -q https://github.com/earwig/mwparserfromhell.git
-(cd mwparserfromhell && git gc --aggressive --prune=all --quiet)
+(cd mwparserfromhell && git checkout v0.5.4 --quiet && git gc --aggressive --prune=all --quiet)
 
 echo Step 2: core master
 # Current version of core
