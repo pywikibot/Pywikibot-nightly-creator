@@ -52,7 +52,7 @@ git clone -q --depth 1 --branch stable https://gerrit.wikimedia.org/r/pywikibot/
     cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 3: core python 2
+echo Step 4: core python 2
 # Create a stable version of core for python 2
 git clone -q --depth 1 --branch python2 https://gerrit.wikimedia.org/r/pywikibot/core.git core_python2
 (cd core_python2
