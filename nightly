@@ -52,18 +52,33 @@ git clone -q --depth 1 --branch stable https://gerrit.wikimedia.org/r/pywikibot/
     cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 4: zip ALL the things
+echo Step 3: core python 2
+# Create a stable version of core for python 2
+git clone -q --depth 1 --branch python2 https://gerrit.wikimedia.org/r/pywikibot/core.git core_python2
+(cd core_python2
+    create_version "nightly/core_python2" "pywikibot/version"
+    git gc --aggressive --prune=all --quiet
+    (cd scripts
+        git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
+        (cd i18n && git gc --aggressive --prune=all --quiet)
+    )
+    cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
+)
+
+echo Step 5: zip ALL the things
 zip -9 -r -q core.zip core
 zip -9 -r -q core_stable.zip core_stable
+zip -9 -r -q core_python2.zip core_python2
 
-echo Step 5: tar ALL the things
+echo Step 6: tar ALL the things
 tar czPf core.tar.gz core/
 tar czPf core_stable.tar.gz core_stable/
+tar czPf core_python2.tar.gz core_python2/
 
-echo Step 6: copy static files
+echo Step 7: copy static files
 cp -R /data/project/pywikibot/public_html_static/. .
 
-echo Step 7: do the magic switcharoo
+echo Step 8: do the magic switcharoo
 set 
 cd /data/project/pywikibot/
 rm -rf public_html.new
