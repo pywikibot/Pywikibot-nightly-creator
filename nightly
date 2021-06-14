@@ -48,7 +48,7 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
-    cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
+    cp -R ../mwparserfromhell/src/mwparserfromhell/ mwparserfromhell/
     cp -R ../setuptools/setuptools/ setuptools/
 )
 
@@ -62,7 +62,7 @@ git clone -q --depth 1 --branch stable https://gerrit.wikimedia.org/r/pywikibot/
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
-    cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
+    cp -R ../mwparserfromhell/src/mwparserfromhell/ mwparserfromhell/
     cp -R ../setuptools/setuptools/ setuptools/
 )
 
