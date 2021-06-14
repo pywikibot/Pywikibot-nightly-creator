@@ -22,23 +22,11 @@ trap finish EXIT
 
 cd $TMPDIR
 
-echo Step 1a: mwparserfromhell
-git clone --branch v0.6.2 --depth 1 --quiet https://github.com/earwig/mwparserfromhell.git
-(cd mwparserfromhell && git gc --aggressive --prune=all --quiet)
+echo Step 1: mwparserfromhell
+git clone -q https://github.com/earwig/mwparserfromhell.git
+(cd mwparserfromhell && git checkout v0.5.4 --quiet && git gc --aggressive --prune=all --quiet)
 
-echo Step 1b: mwparserfromhell python 2
-git clone --branch v0.5.4 --depth 1 --quiet https://github.com/earwig/mwparserfromhell.git mwparserfromhell_python2
-(cd mwparserfromhell_python2 && git gc --aggressive --prune=all --quiet)
-
-echo Step 2a: setuptools
-git clone --branch v50.1.0 --depth 1 --quiet https://github.com/pypa/setuptools.git
-(cd setuptools && git gc --aggressive --prune=all --quiet)
-
-echo Step 2b: setuptools python 2
-git clone --branch v44.0.0 --depth 1 --quiet https://github.com/pypa/setuptools.git setuptools_python2
-(cd setuptools_python2 && git gc --aggressive --prune=all --quiet)
-
-echo Step 3: core master
+echo Step 2: core master
 # Current version of core
 git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 (cd core
@@ -48,11 +36,10 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
-    cp -R ../mwparserfromhell/src/mwparserfromhell/ mwparserfromhell/
-    cp -R ../setuptools/setuptools/ setuptools/
+    cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 4: core stable
+echo Step 3: core stable
 # Create a stable version of core. Bugs T98592 and T217236
 git clone -q --depth 1 --branch stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 (cd core_stable
@@ -62,11 +49,10 @@ git clone -q --depth 1 --branch stable https://gerrit.wikimedia.org/r/pywikibot/
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
-    cp -R ../mwparserfromhell/src/mwparserfromhell/ mwparserfromhell/
-    cp -R ../setuptools/setuptools/ setuptools/
+    cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 5: core python 2
+echo Step 4: core python 2
 # Create a stable version of core for python 2
 git clone -q --depth 1 --branch python2 https://gerrit.wikimedia.org/r/pywikibot/core.git core_python2
 (cd core_python2
@@ -76,24 +62,23 @@ git clone -q --depth 1 --branch python2 https://gerrit.wikimedia.org/r/pywikibot
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
-    cp -R ../mwparserfromhell_python2/mwparserfromhell/ mwparserfromhell/
-    cp -R ../setuptools_python2/setuptools/ setuptools/
+    cp -R ../mwparserfromhell/mwparserfromhell/ mwparserfromhell/
 )
 
-echo Step 6: zip ALL the things
+echo Step 5: zip ALL the things
 zip -9 -r -q core.zip core
 zip -9 -r -q core_stable.zip core_stable
 zip -9 -r -q core_python2.zip core_python2
 
-echo Step 7: tar ALL the things
+echo Step 6: tar ALL the things
 tar czPf core.tar.gz core/
 tar czPf core_stable.tar.gz core_stable/
 tar czPf core_python2.tar.gz core_python2/
 
-echo Step 8: copy static files
+echo Step 7: copy static files
 cp -R /data/project/pywikibot/public_html_static/. .
 
-echo Step 9: do the magic switcharoo
+echo Step 8: do the magic switcharoo
 set 
 cd /data/project/pywikibot/
 rm -rf public_html.new
