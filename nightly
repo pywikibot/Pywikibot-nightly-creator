@@ -77,7 +77,12 @@ git clone -q --depth 1 -b python2 https://gerrit.wikimedia.org/r/pywikibot/core.
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
     cp -a ../mwparserfromhell_python2/build/lib*/. .
-    cp -a ../setuptools_python2/build/lib/. .
+    pwd
+    ls ..
+    ls ../setuptools_python2/
+    ls ../setuptools_python2/build/
+    ls ../setuptools_python2/build/lib/
+    cp -a ../setuptools_python2/build/lib*/. .
 )
 
 echo Step 6: zip ALL the things
