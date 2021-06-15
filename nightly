@@ -50,6 +50,7 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
     )
     cp -a ../mwparserfromhell/build/lib*/. .
     cp -a ../setuptools/build/lib*/. .
+    (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
 )
 
 echo Step 4: core stable
@@ -64,6 +65,7 @@ git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.g
     )
     cp -a ../mwparserfromhell/build/lib*/. .
     cp -a ../setuptools/build/lib*/. .
+    (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
 )
 
 echo Step 5: core python 2
@@ -78,6 +80,7 @@ git clone -q --depth 1 -b python2 https://gerrit.wikimedia.org/r/pywikibot/core.
     )
     cp -a ../mwparserfromhell_python2/build/lib*/. .
     cp -a ../setuptools_python2/build/lib*/. .
+    (cd setuptools && ln -s ../pkg_resources .)
 )
 
 echo Step 6: zip ALL the things
