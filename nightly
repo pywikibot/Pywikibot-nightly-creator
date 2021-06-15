@@ -23,20 +23,20 @@ trap finish EXIT
 cd $TMPDIR
 
 echo Step 1a: mwparserfromhell
-git clone --branch v0.6.2 --depth 1 --quiet https://github.com/earwig/mwparserfromhell.git
-(cd mwparserfromhell && python3 setup.py build && git gc --aggressive --prune=all --quiet)
+git clone -q --depth 1 -b v0.6.2 https://github.com/earwig/mwparserfromhell.git
+(cd mwparserfromhell && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 1b: mwparserfromhell python 2
-git clone --branch v0.5.4 --depth 1 --quiet https://github.com/earwig/mwparserfromhell.git mwparserfromhell_python2
-(cd mwparserfromhell_python2 && python setup.py build && git gc --aggressive --prune=all --quiet)
+git clone -q --depth 1 -b v0.5.4 https://github.com/earwig/mwparserfromhell.git mwparserfromhell_python2
+(cd mwparserfromhell_python2 && python setup.py -q build && git gc --aggressive --prune=all --quiet)
 
-echo Step 2a: setuptools (T284299)
-git clone --branch v50.1.0 --depth 1 --quiet https://github.com/pypa/setuptools.git
-(cd setuptools && python3 setup.py build && git gc --aggressive --prune=all --quiet)
+echo Step 2a: setuptools T284299
+git clone -q --depth 1 -b v50.1.0 https://github.com/pypa/setuptools.git
+(cd setuptools && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 2b: setuptools python 2
-git clone --branch v44.0.0 --depth 1 --quiet https://github.com/pypa/setuptools.git setuptools_python2
-(cd setuptools_python2 && python setup.py build && git gc --aggressive --prune=all --quiet)
+git clone -q --depth 1 -b v44.0.0 https://github.com/pypa/setuptools.git setuptools_python2
+(cd setuptools_python2 && python setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 3: core master
 # Current version of core
@@ -54,7 +54,7 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 
 echo Step 4: core stable
 # Create a stable version of core. Bugs T98592 and T217236
-git clone -q --depth 1 --branch stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
+git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 (cd core_stable
     create_version "nightly/core_stable" "pywikibot/version"
     git gc --aggressive --prune=all --quiet
@@ -68,7 +68,7 @@ git clone -q --depth 1 --branch stable https://gerrit.wikimedia.org/r/pywikibot/
 
 echo Step 5: core python 2
 # Create a stable version of core for python 2
-git clone -q --depth 1 --branch python2 https://gerrit.wikimedia.org/r/pywikibot/core.git core_python2
+git clone -q --depth 1 -b python2 https://gerrit.wikimedia.org/r/pywikibot/core.git core_python2
 (cd core_python2
     create_version "nightly/core_python2" "pywikibot/version"
     git gc --aggressive --prune=all --quiet
