@@ -23,7 +23,7 @@ trap finish EXIT
 cd $TMPDIR
 
 echo Step 1a: mwparserfromhell
-git clone -q --depth 1 -b v0.6.3 https://github.com/earwig/mwparserfromhell.git
+git clone -q --depth 1 -b v0.6.5 https://github.com/earwig/mwparserfromhell.git
 (cd mwparserfromhell && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 1b: mwparserfromhell python 2
@@ -31,7 +31,7 @@ git clone -q --depth 1 -b v0.5.4 https://github.com/earwig/mwparserfromhell.git 
 (cd mwparserfromhell_python2 && python setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 2a: setuptools T284299
-git clone -q --depth 1 -b v50.1.0 https://github.com/pypa/setuptools.git
+git clone -q --depth 1 -b v68.0.0 https://github.com/pypa/setuptools.git
 (cd setuptools && python3 bootstrap.py && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 2b: setuptools python 2
