@@ -32,7 +32,7 @@ git clone -q --depth 1 -b v0.5.4 https://github.com/earwig/mwparserfromhell.git 
 
 echo Step 2a: setuptools T284299
 git clone -q --depth 1 -b v68.0.0 https://github.com/pypa/setuptools.git
-(cd setuptools && python3 bootstrap.py && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
+(cd setuptools && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 2b: setuptools python 2
 git clone -q --depth 1 -b v44.0.0 https://github.com/pypa/setuptools.git setuptools_python2
