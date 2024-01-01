@@ -32,8 +32,8 @@ git -c advice.detachedHead=false clone -q --depth 1 -b v68.0.0 https://github.co
 
 echo Step 3: importlib_metadata for Python 3.7
 # currently needed for Pywikibot 9.0 (core)
-git -c advice.detachedHead=false clone --depth 1 -b v6.7.0 https://github.com/python/importlib_metadata.git
-(cd importlib_metadata && python3 -c "import setuptools; setuptools.setup()" build && git gc --aggressive --prune=all)
+git -c advice.detachedHead=false clone  -q --depth 1 -b v6.7.0 https://github.com/python/importlib_metadata.git
+(cd importlib_metadata && python3 -c "import setuptools; setuptools.setup()" build && git gc --aggressive --prune=all --quiet)
 
 echo Step 4: core master
 # Current version of core
@@ -84,8 +84,13 @@ cd /data/project/pywikibot/
 rm -rf public_html.new
 rm -rf public_html.old
 
-echo Step 10: do the magic switcharoo
+# do the magic switcharoo
+echo Step 10a: create public_html.new
 mv $TMPDIR public_html.new
 chmod 755 public_html.new
+
+echo Step 10b: backup public_html
 mv public_html public_html.old
+
+echo Step 10c: create new public_html
 mv public_html.new public_html
