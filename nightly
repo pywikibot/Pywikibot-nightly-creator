@@ -30,7 +30,13 @@ echo Step 2: setuptools T284299
 git -c advice.detachedHead=false clone -q --depth 1 -b v68.0.0 https://github.com/pypa/setuptools.git
 (cd setuptools && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
-echo Step 3: core master
+echo Step 3: importlib_metadata for Python 3.7
+# currently needed for Pywikibot 9.0 (core)
+git -c advice.detachedHead=false clone -q --depth 1 -b v6.7.0 https://github.com/python/importlib_metadata
+(cd importlib_metadata && python3 -c "import setuptools; setuptools.setup()" -q build)
+git gc --aggressive --prune=all --quiet
+
+echo Step 4: core master
 # Current version of core
 git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 (cd core
@@ -40,12 +46,13 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
+    cp -a ../importlib_metadata/build/lib*/. .
     cp -a ../mwparserfromhell/build/lib*/. .
     cp -a ../setuptools/build/lib*/. .
     (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
 )
 
-echo Step 4: core stable
+echo Step 5: core stable
 # Create a stable version of core. Bugs T98592 and T217236
 git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 (cd core_stable
@@ -71,11 +78,14 @@ tar czPf core_stable.tar.gz core_stable/
 echo Step 8: copy static files
 cp -R /data/project/pywikibot/public_html_static/. .
 
-echo Step 9: do the magic switcharoo
-set 
+echo Step 9: remove old stuff
+# uncomment for debugging:
+# set 
 cd /data/project/pywikibot/
 rm -rf public_html.new
 rm -rf public_html.old
+
+echo Step 10: do the magic switcharoo
 mv $TMPDIR public_html.new
 chmod 755 public_html.new
 mv public_html public_html.old
