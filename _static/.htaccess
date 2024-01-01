@@ -1,0 +1,3 @@
+Options +Indexes 
+AddHandler send-as-is .py
+AddType text/x-python-source .py
