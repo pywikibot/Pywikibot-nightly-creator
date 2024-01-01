@@ -22,21 +22,13 @@ trap finish EXIT
 
 cd $TMPDIR
 
-echo Step 1a: mwparserfromhell
+echo Step 1: mwparserfromhell
 git -c advice.detachedHead=false clone -q --depth 1 -b v0.6.5 https://github.com/earwig/mwparserfromhell.git
 (cd mwparserfromhell && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
-echo Step 1b: mwparserfromhell python 2
-git -c advice.detachedHead=false clone -q --depth 1 -b v0.5.4 https://github.com/earwig/mwparserfromhell.git mwparserfromhell_python2
-(cd mwparserfromhell_python2 && python setup.py -q build && git gc --aggressive --prune=all --quiet)
-
-echo Step 2a: setuptools T284299
+echo Step 2: setuptools T284299
 git -c advice.detachedHead=false clone -q --depth 1 -b v68.0.0 https://github.com/pypa/setuptools.git
 (cd setuptools && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
-
-echo Step 2b: setuptools python 2
-git -c advice.detachedHead=false clone -q --depth 1 -b v44.0.0 https://github.com/pypa/setuptools.git setuptools_python2
-(cd setuptools_python2 && python bootstrap.py && python setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 3: core master
 # Current version of core
@@ -68,30 +60,13 @@ git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.g
     (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
 )
 
-echo Step 5: core python 2
-# Create a stable version of core for python 2
-git -c advice.detachedHead=false clone -q --depth 1 -b python2 https://gerrit.wikimedia.org/r/pywikibot/core.git core_python2
-(cd core_python2
-    create_version "nightly/core_python2" "pywikibot/version"
-    git gc --aggressive --prune=all --quiet
-    (cd scripts
-        git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
-        (cd i18n && git gc --aggressive --prune=all --quiet)
-    )
-    cp -a ../mwparserfromhell_python2/build/lib*/. .
-    cp -a ../setuptools_python2/build/lib*/. .
-    (cd setuptools && ln -s ../pkg_resources .)
-)
-
 echo Step 6: zip ALL the things
 zip -9 -r -q core.zip core
 zip -9 -r -q core_stable.zip core_stable
-zip -9 -r -q core_python2.zip core_python2
 
 echo Step 7: tar ALL the things
 tar czPf core.tar.gz core/
 tar czPf core_stable.tar.gz core_stable/
-tar czPf core_python2.tar.gz core_python2/
 
 echo Step 8: copy static files
 cp -R /data/project/pywikibot/public_html_static/. .
