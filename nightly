@@ -23,19 +23,19 @@ trap finish EXIT
 cd $TMPDIR
 
 echo Step 1a: mwparserfromhell
-git clone -q --depth 1 -b v0.6.5 https://github.com/earwig/mwparserfromhell.git
+git -c advice.detachedHead=false clone -q --depth 1 -b v0.6.5 https://github.com/earwig/mwparserfromhell.git
 (cd mwparserfromhell && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 1b: mwparserfromhell python 2
-git clone -q --depth 1 -b v0.5.4 https://github.com/earwig/mwparserfromhell.git mwparserfromhell_python2
+git -c advice.detachedHead=false clone -q --depth 1 -b v0.5.4 https://github.com/earwig/mwparserfromhell.git mwparserfromhell_python2
 (cd mwparserfromhell_python2 && python setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 2a: setuptools T284299
-git clone -q --depth 1 -b v68.0.0 https://github.com/pypa/setuptools.git
+git -c advice.detachedHead=false clone -q --depth 1 -b v68.0.0 https://github.com/pypa/setuptools.git
 (cd setuptools && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 2b: setuptools python 2
-git clone -q --depth 1 -b v44.0.0 https://github.com/pypa/setuptools.git setuptools_python2
+git -c advice.detachedHead=false clone -q --depth 1 -b v44.0.0 https://github.com/pypa/setuptools.git setuptools_python2
 (cd setuptools_python2 && python bootstrap.py && python setup.py -q build && git gc --aggressive --prune=all --quiet)
 
 echo Step 3: core master
@@ -70,7 +70,7 @@ git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.g
 
 echo Step 5: core python 2
 # Create a stable version of core for python 2
-git clone -q --depth 1 -b python2 https://gerrit.wikimedia.org/r/pywikibot/core.git core_python2
+git -c advice.detachedHead=false clone -q --depth 1 -b python2 https://gerrit.wikimedia.org/r/pywikibot/core.git core_python2
 (cd core_python2
     create_version "nightly/core_python2" "pywikibot/version"
     git gc --aggressive --prune=all --quiet
