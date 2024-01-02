@@ -12,32 +12,36 @@ function create_version {
     git rev-parse --short HEAD >> $2
 }
 
-TMPDIR=$(mktemp -d)
-echo Building new public_html in $TMPDIR on `hostname`...
 function finish {
   rm -rf "$TMPDIR"
   echo Cleaned up $TMPDIR
 }
-trap finish EXIT
 
+TMPDIR=$(mktemp -d)
+echo Building new public_html in $TMPDIR on `hostname`...
+trap finish EXIT
 cd $TMPDIR
 
-echo Step 1: mwparserfromhell
+echo Step 1: Collecting mwparserfromhell...
 git -c advice.detachedHead=false clone -q --depth 1 -b v0.6.5 https://github.com/earwig/mwparserfromhell.git
 (cd mwparserfromhell && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
-echo Step 2: setuptools T284299
+echo Step 2: Collecting setuptools...
+# T284299
 git -c advice.detachedHead=false clone -q --depth 1 -b v68.0.0 https://github.com/pypa/setuptools.git
 (cd setuptools && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
 
-echo Step 3: importlib_metadata for Python 3.7
+echo Step 3: Collecting importlib_metadata for Python 3.7...
 # currently needed for Pywikibot 9.0 (core)
 git -c advice.detachedHead=false clone -q --depth 1 -b v6.7.0 https://github.com/python/importlib_metadata.git
 (cd importlib_metadata && python3 -c "import setuptools; setuptools.setup()" -q build && git gc --aggressive --prune=all --quiet)
 
-ls
+echo Step 4: Collecting zipp for importlib_metadata...
+# currently needed for Pywikibot 9.0 (core)
+git -c advice.detachedHead=false clone -q --depth 1 -b v3.15.0 https://github.com/jaraco/zipp.git
+(cd zipp && python3 -c "import setuptools; setuptools.setup()" -q build && git gc --aggressive --prune=all --quiet)
 
-echo Step 4: core master
+echo Step 5: core master
 # Current version of core
 git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 (cd core
@@ -49,11 +53,12 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
     )
     cp -a ../importlib_metadata/build/lib*/. .
     cp -a ../mwparserfromhell/build/lib*/. .
+    cp -a ../zipp/build/lib*/. .
     cp -a ../setuptools/build/lib*/. .
     (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
 )
 
-echo Step 5: core stable
+echo Step 6: core stable
 # Create a stable version of core. Bugs T98592 and T217236
 git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 (cd core_stable
@@ -68,31 +73,28 @@ git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.g
     (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
 )
 
-echo Step 6: zip ALL the things
+echo Step 7: zip ALL the things
 zip -9 -r -q core.zip core
 zip -9 -r -q core_stable.zip core_stable
 
-echo Step 7: tar ALL the things
+echo Step 8: tar ALL the things
 tar czPf core.tar.gz core/
 tar czPf core_stable.tar.gz core_stable/
 
-echo Step 8: copy static files
+echo Step 9: copy static files
 cp -R /data/project/pywikibot/nightly-source/_static/. .
 
-echo Step 9: remove old stuff
+echo Step 10: remove old stuff
 # uncomment for debugging:
 # set 
 cd /data/project/pywikibot/
 rm -rf public_html.new
 rm -rf public_html.old
 
-# do the magic switcharoo
-echo Step 10a: create public_html.new
+echo Step 11: create public_html.new
 mv $TMPDIR public_html.new
 chmod 755 public_html.new
 
-echo Step 10b: backup public_html
+echo Step 12: do the magic switcharoo
 mv public_html public_html.old
-
-echo Step 10c: create new public_html
 mv public_html.new public_html
