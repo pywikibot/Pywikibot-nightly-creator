@@ -36,12 +36,17 @@ echo Step 3: Collecting importlib_metadata for Python 3.7...
 git -c advice.detachedHead=false clone -q --depth 1 -b v6.7.0 https://github.com/python/importlib_metadata.git
 (cd importlib_metadata && python3 -c "import setuptools; setuptools.setup()" -q build && git gc --aggressive --prune=all --quiet)
 
-echo Step 4: Collecting zipp for importlib_metadata...
+echo Step 4: Collecting typing_extensions for importlib_metadata...
+# currently needed for Pywikibot 9.0 (core)
+git -c advice.detachedHead=false clone -q --depth 1 -b 4.7.1 https://github.com/python/typing_extensions.git
+(cd typing_extensions && python3 -c "import setuptools; setuptools.setup()" -q build && git gc --aggressive --prune=all --quiet)
+
+echo Step 5: Collecting zipp for importlib_metadata...
 # currently needed for Pywikibot 9.0 (core)
 git -c advice.detachedHead=false clone -q --depth 1 -b v3.15.0 https://github.com/jaraco/zipp.git
 (cd zipp && python3 -c "import setuptools; setuptools.setup()" -q build && git gc --aggressive --prune=all --quiet)
 
-echo Step 5: core master
+echo Step 6: Build core master
 # Current version of core
 git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 (cd core
@@ -53,12 +58,13 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
     )
     cp -a ../importlib_metadata/build/lib*/. .
     cp -a ../mwparserfromhell/build/lib*/. .
+    cp -a ../typing_extensions/build/lib*/. .
     cp -a ../zipp/build/lib*/. .
     cp -a ../setuptools/build/lib*/. .
     (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
 )
 
-echo Step 6: core stable
+echo Step 7: Build core stable
 # Create a stable version of core. Bugs T98592 and T217236
 git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 (cd core_stable
@@ -73,28 +79,28 @@ git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.g
     (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
 )
 
-echo Step 7: zip ALL the things
+echo Step 8: zip ALL the things
 zip -9 -r -q core.zip core
 zip -9 -r -q core_stable.zip core_stable
 
-echo Step 8: tar ALL the things
+echo Step 9: tar ALL the things
 tar czPf core.tar.gz core/
 tar czPf core_stable.tar.gz core_stable/
 
-echo Step 9: copy static files
+echo Step 10: Copy static files
 cp -R /data/project/pywikibot/nightly-source/_static/. .
 
-echo Step 10: remove old stuff
+echo Step 11: Remove old stuff
 # uncomment for debugging:
 # set 
 cd /data/project/pywikibot/
 rm -rf public_html.new
 rm -rf public_html.old
 
-echo Step 11: create public_html.new
+echo Step 12: Create public_html.new from temp
 mv $TMPDIR public_html.new
 chmod 755 public_html.new
 
-echo Step 12: do the magic switcharoo
+echo Step 13: Do the magic switcharoo
 mv public_html public_html.old
 mv public_html.new public_html
