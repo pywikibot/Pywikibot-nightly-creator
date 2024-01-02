@@ -40,9 +40,6 @@ echo Step 4: Collecting typing_extensions for importlib_metadata...
 # currently needed for Pywikibot 9.0 (core)
 git -c advice.detachedHead=false clone --depth 1 -b 4.7.1 https://github.com/python/typing_extensions.git
 (cd typing_extensions && python3 -c "import setuptools; setuptools.setup()" build && git gc --aggressive --prune=all)
-ls typing_extensions
-ls typing_extensions/build
-ls typing_extensions/build/lib
 
 echo Step 5: Collecting zipp for importlib_metadata...
 # currently needed for Pywikibot 9.0 (core)
