@@ -34,17 +34,29 @@ git -c advice.detachedHead=false clone -q --depth 1 -b v68.0.0 https://github.co
 echo Step 3: Collecting importlib_metadata for Python 3.7...
 # currently needed for Pywikibot 9.0 (core)
 git -c advice.detachedHead=false clone -q --depth 1 -b v6.7.0 https://github.com/python/importlib_metadata.git
-(cd importlib_metadata && python3 -c "import setuptools; setuptools.setup()" -q build && git gc --aggressive --prune=all --quiet)
+(cd importlib_metadata
+    python3 -c "import setuptools; setuptools.setup()" -q build
+    git gc --aggressive --prune=all --quiet
+)
 
 echo Step 4: Collecting typing_extensions for importlib_metadata...
 # currently needed for Pywikibot 9.0 (core)
-git -c advice.detachedHead=false clone --depth 1 -b 4.7.1 https://github.com/python/typing_extensions.git
-(cd typing_extensions && python3 -c "import setuptools; setuptools.setup()" build && git gc --aggressive --prune=all)
+git -c advice.detachedHead=false clone -q --depth 1 -b 4.7.1 https://github.com/python/typing_extensions.git
+cp -R typing_extensions typing_extensions.temp
+(cd typing_extensions.temp
+    # copy newer setuptools fo build package with pyproject.toml
+    cp -a ../setuptools/build/lib*/. .
+    python3 -c "from setuptools import setuptools; setuptools.setup()" build
+    git gc --aggressive --prune=all --quiet
+)
 
 echo Step 5: Collecting zipp for importlib_metadata...
 # currently needed for Pywikibot 9.0 (core)
 git -c advice.detachedHead=false clone -q --depth 1 -b v3.15.0 https://github.com/jaraco/zipp.git
-(cd zipp && python3 -c "import setuptools; setuptools.setup()" -q build && git gc --aggressive --prune=all --quiet)
+(cd zipp
+    python3 -c "import setuptools; setuptools.setup()" -q build
+    git gc --aggressive --prune=all --quiet
+)
 
 echo Step 6: Build core master
 # Current version of core
@@ -58,7 +70,7 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
     )
     cp -a ../importlib_metadata/build/lib*/. .
     cp -a ../mwparserfromhell/build/lib*/. .
-#    cp -a ../typing_extensions/build/lib*/. .
+    cp -a ../typing_extensions.temp/build/lib*/. .
     cp -a ../zipp/build/lib*/. .
     cp -a ../setuptools/build/lib*/. .
     (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
