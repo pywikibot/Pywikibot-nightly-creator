@@ -44,9 +44,9 @@ echo Step 4: Collecting typing_extensions for importlib_metadata...
 git -c advice.detachedHead=false clone -q --depth 1 -b 4.7.1 https://github.com/python/typing_extensions.git
 cp -R typing_extensions typing_extensions.temp
 (cd typing_extensions.temp
-    # copy newer setuptools fo build package with pyproject.toml
+    # copy newer setuptools to build package with pyproject.toml
     cp -a ../setuptools/build/lib*/. .
-    python3 -c "from setuptools import setuptools; setuptools.setup()" build
+    python3 -c "from setuptools import setuptools; setuptools.setup()" -q build
     git gc --aggressive --prune=all --quiet
 )
 
@@ -104,7 +104,8 @@ cp -R /data/project/pywikibot/nightly-source/_static/. .
 
 echo Step 11: Remove old stuff
 # uncomment for debugging:
-# set 
+# set
+rm -rf typing_extensions.temp
 cd /data/project/pywikibot/
 rm -rf public_html.new
 rm -rf public_html.old
