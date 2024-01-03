@@ -11,10 +11,10 @@ https://pywikibot.org.
 | Script | Description |
 |-|-|
 | ``pre_nightly`` | clones https://github.com/pywikibot/Pywikibot-nightly-creator into ``nightly-source`` folder |
-| ``nightly-source/nightly`` | creates ``public_html`` folder from ``public_html_static`` folder and clones all the packages into it |
+| ``nightly-source/nightly`` | creates ``public_html`` folder from ``_static`` folder and clones all the packages into it |
 
 crontab runs these files every 12 hours. It is backed up in ``crontab.bak``file.
-You can edit ``index.html`` in ``public_html_static`` folder, which will be deployed in
+You can edit ``index.html`` in ``_static`` folder, which will be deployed in
 12 hours. It creates the followings:
 
 | Type | Name | Description
