@@ -4,6 +4,9 @@ set -e -u
 # non tools.pywikibot should not be able to tamper with this
 umask 0022
 
+# Check into venv
+source .kube_venv/bin/activate
+
 # Create version file
 function create_version {
     echo "$1" > $2
