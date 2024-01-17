@@ -4,8 +4,17 @@ set -e -u
 # non tools.pywikibot should not be able to tamper with this
 umask 0022
 
-# Check into venv
+# delete the venv, if it already exists
+rm -rf .kube_venv
+
+# create fresh venv
+python3 -m venv .kube_venv
+
+# activate it
 source .kube_venv/bin/activate
+
+# upgrade pip inside the venv and add support for setuptools
+pip install -U pip setuptools
 
 # Create version file
 function create_version {
