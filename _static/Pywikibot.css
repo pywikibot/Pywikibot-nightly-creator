@@ -1,0 +1,59 @@
+/*
+ * Pywikibot stylesheet solely for Pywkibot nightly dump
+ */
+html {
+}
+body {
+    display: block;
+    line-height: 1.2;
+    max-width: 800px;
+    font-family: sans-serif;
+    font-size: 100%;
+    background-color: #fff;
+    color: #555;
+    margin: 0px;
+    padding-left: 8px;
+    margin-left:auto;
+    margin-right:auto;
+}
+h1 {
+    font-size: 2em;
+    color: #369;
+    margin:.67em 0;
+    border-left: 16px solid;
+    border-left-color: #369;
+    padding: 0 1rem;
+}
+h2 {
+    font-size: 1.8em;
+    color: #246342;
+    margin:.67em 0;
+    border-left: 16px solid;
+    border-left-color: #396;
+    padding: 0 1rem;
+}
+a {
+    color: #369;
+}
+.footer {
+    font-size: 80%;
+    color: #fff;
+    background-color: #369;
+    padding: 8px;
+}
+.main {
+    padding-left: 8px;
+}
+.master {
+    color: #ac6600;
+    border-left-color: #f0bc00;
+}
+.navi {
+    background-color: #eee;
+    vertical-align: top;
+    padding: 8px;
+}
+.outdated {
+    color: #970302;
+    border-left-color: #900;
+}
