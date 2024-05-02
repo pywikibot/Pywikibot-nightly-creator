@@ -19,7 +19,7 @@ pip install -U pip setuptools
 # Create version file
 function create_version {
     echo "$1" > $2
-    git rev-list HEAD | wc -l >> $2
+    git rev-list HEAD --count >> $2
     date +%Y-%m-%dT%H:%M:%S >> $2
     git rev-parse --short HEAD >> $2
 }
