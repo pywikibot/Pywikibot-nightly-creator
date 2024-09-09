@@ -120,7 +120,7 @@ echo Step 11: Remove old stuff
 rm -rf typing_extensions.temp
 cd /data/project/pywikibot/
 rm -rf public_html.new
-rm -rf public_html.old*
+rm -rf public_html.old
 
 echo Step 12: Create public_html.new from temp
 mv $TMPDIR public_html.new
