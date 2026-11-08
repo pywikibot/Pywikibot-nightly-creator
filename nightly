@@ -1,3 +1,4 @@
+
 #! /bin/bash
 set -e -u
 
@@ -25,52 +26,23 @@ function create_version {
 }
 
 function finish {
-  rm -rf "$TMPDIR"
-  echo Cleaned up $TMPDIR
+    rm -rf "$TMPDIR"
+    echo Cleaned up $TMPDIR
 }
 
 TMPDIR=$(mktemp -d)
-echo Building new public_html in $TMPDIR on `hostname`...
+echo "Building new public_html in $TMPDIR on $(hostname)..."
 trap finish EXIT
 cd $TMPDIR
 
-echo Step 1: Collecting mwparserfromhell...
-git -c advice.detachedHead=false clone -q --depth 1 -b v0.6.5 https://github.com/earwig/mwparserfromhell.git
-(cd mwparserfromhell && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
+echo Step 1: Collecting mandatory dependencies...
+pip install --no-compile --target "$TMPDIR/dependencies" \
+    --python-version 3.9 --only-binary=:all: \
+    'mwparserfromhell>=0.7.2' \
+    'packaging>=25.0' \
+    'requests>=2.32.3'
 
-echo Step 2: Collecting setuptools...
-# T284299
-git -c advice.detachedHead=false clone -q --depth 1 -b v68.0.0 https://github.com/pypa/setuptools.git
-(cd setuptools && python3 setup.py -q build && git gc --aggressive --prune=all --quiet)
-
-echo Step 3: Collecting importlib_metadata for Python 3.7...
-# currently needed for Pywikibot 9.0 (core)
-git -c advice.detachedHead=false clone -q --depth 1 -b v6.7.0 https://github.com/python/importlib_metadata.git
-(cd importlib_metadata
-    python3 -c "import setuptools; setuptools.setup()" -q build
-    git gc --aggressive --prune=all --quiet
-)
-
-echo Step 4: Collecting typing_extensions for importlib_metadata...
-# currently needed for Pywikibot 9.0 (core)
-git -c advice.detachedHead=false clone -q --depth 1 -b 4.7.1 https://github.com/python/typing_extensions.git
-cp -R typing_extensions typing_extensions.temp
-(cd typing_extensions.temp
-    # copy newer setuptools to build package with pyproject.toml
-    cp -a ../setuptools/build/lib*/. .
-    python3 -c "from setuptools import setuptools; setuptools.setup()" -q build
-    git gc --aggressive --prune=all --quiet
-)
-
-echo Step 5: Collecting zipp for importlib_metadata...
-# currently needed for Pywikibot 9.0 (core)
-git -c advice.detachedHead=false clone -q --depth 1 -b v3.15.0 https://github.com/jaraco/zipp.git
-(cd zipp
-    python3 -c "import setuptools; setuptools.setup()" -q build
-    git gc --aggressive --prune=all --quiet
-)
-
-echo Step 6: Build core master
+echo Step 2: Build core master
 # Current version of core
 git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
 (cd core
@@ -80,15 +52,10 @@ git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/core.git
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
-    cp -a ../importlib_metadata/build/lib*/. .
-    cp -a ../mwparserfromhell/build/lib*/. .
-    cp -a ../typing_extensions.temp/build/lib*/. .
-    cp -a ../zipp/build/lib*/. .
-    cp -a ../setuptools/build/lib*/. .
-    (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
+    cp -a ../dependencies/. .
 )
 
-echo Step 7: Build core stable
+echo Step 3: Build core stable
 # Create a stable version of core. Bugs T98592 and T217236
 git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.git core_stable
 (cd core_stable
@@ -98,34 +65,31 @@ git clone -q --depth 1 -b stable https://gerrit.wikimedia.org/r/pywikibot/core.g
         git clone -q --depth 1 https://gerrit.wikimedia.org/r/pywikibot/i18n.git
         (cd i18n && git gc --aggressive --prune=all --quiet)
     )
-    cp -a ../mwparserfromhell/build/lib*/. .
-    cp -a ../setuptools/build/lib*/. .
-    (cd setuptools && ln -s ../pkg_resources . && ln -s ../_distutils_hack .)
+    cp -a ../dependencies/. .
 )
 
-echo Step 8: zip ALL the things
+echo Step 4: zip ALL the things
 zip -9 -r -q core.zip core
 zip -9 -r -q core_stable.zip core_stable
 
-echo Step 9: tar ALL the things
+echo Step 5: tar ALL the things
 tar czPf core.tar.gz core/
 tar czPf core_stable.tar.gz core_stable/
 
-echo Step 10: Copy static files
+echo Step 6: Copy static files
 cp -R /data/project/pywikibot/nightly-source/_static/. .
 
-echo Step 11: Remove old stuff
+echo Step 7: Remove old stuff
 # uncomment for debugging:
 # set
-rm -rf typing_extensions.temp
 cd /data/project/pywikibot/
 rm -rf public_html.new
 rm -rf public_html.old
 
-echo Step 12: Create public_html.new from temp
+echo Step 8: Create public_html.new from temp
 mv $TMPDIR public_html.new
 chmod 755 public_html.new
 
-echo Step 13: Do the magic switcharoo
+echo Step 9: Do the magic switcharoo
 mv public_html public_html.old
 mv public_html.new public_html
