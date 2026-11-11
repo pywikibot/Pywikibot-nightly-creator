@@ -37,9 +37,7 @@ cd $TMPDIR
 echo Step 1: Collecting mandatory dependencies...
 pip install --no-compile --target "$TMPDIR/dependencies" \
     --python-version 3.9 --only-binary=:all: \
-    'mwparserfromhell>=0.7.2' \
-    'packaging>=25.0' \
-    'requests>=2.32.3'
+    mwparserfromhell packaging requests
 
 echo Step 2: Build core master
 # Current version of core
